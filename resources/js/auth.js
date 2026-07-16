@@ -11,13 +11,18 @@ if (form) {
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const name = document.getElementById("name").value.trim();
+        // Pastikan name selalu berupa string murni (bukan undefined/array)
+        // supaya lolos validasi `name` => ['string'] di LoginRequest.
+        const name = String(document.getElementById("name").value ?? "").trim();
         const password = document.getElementById("password").value;
 
         try {
             errorBox.classList.add("hidden");
             errorBox.innerText = "";
 
+            // Tidak ada withCredentials / GET /sanctum/csrf-cookie di sini.
+            // Auth backend memakai Sanctum personal access token (Bearer),
+            // bukan session cookie SPA.
             const response = await window.axios.post("/login", {
                 name,
                 password,

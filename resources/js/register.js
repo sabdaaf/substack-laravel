@@ -11,9 +11,11 @@ if (form) {
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
+        // name & email di-cast eksplisit ke string murni (trim) supaya tidak
+        // memicu error "the name field must be a string" pada RegisterRequest.
         const payload = {
-            name: document.getElementById("name").value,
-            email: document.getElementById("email").value,
+            name: String(document.getElementById("name").value ?? "").trim(),
+            email: String(document.getElementById("email").value ?? "").trim(),
             password: document.getElementById("password").value,
             password_confirmation: document.getElementById(
                 "password_confirmation",
@@ -25,6 +27,8 @@ if (form) {
         errorBox.innerText = "";
 
         try {
+            // Tidak ada withCredentials / GET /sanctum/csrf-cookie di sini.
+            // Register + login keduanya memakai Sanctum Bearer token murni.
             const registerResponse = await window.axios.post(
                 "/register",
                 payload,
